@@ -64,14 +64,22 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         onSaved: (val) {
                           TaskManager().description = val;
                         },
+                        validator: (val) {
+                          if (descriptionController.text == '') {
+                            return 'Please enter the task';
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
+                   Text(
                     'Date',
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(
                     height: 10,

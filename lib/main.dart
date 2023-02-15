@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
           ),
           iconTheme: IconThemeData(
             color: Color(0xffECE7FF),
+            
           ),
           actionsIconTheme: IconThemeData(
             color: Color(0xffECE7FF),

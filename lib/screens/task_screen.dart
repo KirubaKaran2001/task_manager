@@ -87,7 +87,6 @@ class _TaskScreenState extends State<TaskScreen> {
                             DateFormat('hh:mm:ss').format(tasks.date!);
                         return InkWell(
                           onTap: () {
-                            debugPrint('${taskManager[index]}');
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => EditTaskForm(

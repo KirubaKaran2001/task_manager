@@ -39,29 +39,36 @@ class _EditTaskFormState extends State<EditTaskForm> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+         appBar: AppBar(
+          title: const Text(
+            'EDIT A TASK',
+          ),
+        ),
         body: Form(
           key: formKey,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Description',
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Description',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ConstrainedBox(
+                    //  fit: FlexFit.loose,
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height *
+                          0.50, //when it reach the max it will use scroll
+                      maxWidth: double.infinity,
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ConstrainedBox(
-                      //  fit: FlexFit.loose,
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height *
-                            0.50, //when it reach the max it will use scroll
-                        maxWidth: double.infinity,
-                      ),
+                    child: Container(
+                      color: Colors.blueGrey,
                       child: TextFormField(
                         controller: descriptionController,
                         keyboardType: TextInputType.multiline,
@@ -77,78 +84,60 @@ class _EditTaskFormState extends State<EditTaskForm> {
                         },
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    'Date',
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: dateController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Select Date',
                     ),
-                    const Text(
-                      'Date',
+                    readOnly: true,
+                    onTap: () {
+                      _selectDateTime(context);
+                    },
+                    validator: (val) {
+                      if (dateController.text == '') {
+                        return 'Please enter the date';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        buildAddButton(context),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: dateController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Select Date',
-                      ),
-                      readOnly: true,
-                      // onTap: () async {
-                      //   DateTime? pickedDate = await showDatePicker(
-                      //     context: context,
-                      //     initialDate: DateTime.now(),
-                      //     firstDate: DateTime.now(),
-                      //     lastDate: DateTime(2100),
-                      //   );
-                      //   if (pickedDate != null) {
-                      //     String formattedDate = DateFormat('yyyy-MM-dd')
-                      //         .add_jms()
-                      //         .format(pickedDate);
-                      //     setState(() {
-                      //       dateController.text = formattedDate;
-                      //     });
-                      //   } else {
-                      //     debugPrint("Date is not selected");
-                      //   }
-                      // },
-                      onTap: () {
-                        _selectDateTime(context);
-                      },
-                      validator: (val) {
-                        if (dateController.text == '') {
-                          return 'Please enter the date';
-                        } else {
-                          return null;
-                        }
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          buildAddButton(context),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
