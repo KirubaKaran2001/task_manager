@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/forms/add_task_form.dart';
-import 'package:task_manager/forms/edit_task_form.dart';
 import 'package:task_manager/screens/task_screen.dart';
 
 import 'database_modal/database_modal.dart';
@@ -63,7 +62,6 @@ class MyApp extends StatelessWidget {
           actionsIconTheme: IconThemeData(
             color: Color(0xffECE7FF),
           ),
-          
         ),
         colorScheme:
             ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(

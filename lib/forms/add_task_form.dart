@@ -117,10 +117,10 @@ class _AddTaskFormState extends State<AddTaskForm> {
                                 box.add(taskManager);
                                 Navigator.of(context).pop();
                               } else {
-                                print('form not saved');
+                                debugPrint('form not saved');
                               }
                             } else {
-                              print('form is null');
+                              debugPrint('form is null');
                             }
                           },
                           child: Text(
