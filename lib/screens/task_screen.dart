@@ -67,7 +67,6 @@ class _TaskScreenState extends State<TaskScreen> {
             } else {
               return Column(
                 children: [
-                  const SizedBox(height: 24),
                   Expanded(
                     child: ListView.builder(
                       // gridDelegate:
@@ -84,7 +83,7 @@ class _TaskScreenState extends State<TaskScreen> {
                         TaskManager tasks = taskManager[index];
                         String formattedDate =
                             DateFormat('dd-MM-yyyy').format(tasks.date!);
-                                               String formattedTime =
+                        String formattedTime =
                             DateFormat('hh:mm:ss').format(tasks.date!);
                         return InkWell(
                           onTap: () {
@@ -129,7 +128,7 @@ class _TaskScreenState extends State<TaskScreen> {
                                       color: Colors.black,
                                     ),
                                   ),
-                                     const SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   Text(
