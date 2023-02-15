@@ -18,20 +18,17 @@ class TaskManagerAdapter extends TypeAdapter<TaskManager> {
     };
     return TaskManager()
       ..description = fields[0] as String?
-      ..date = fields[1] as String?
-      ..time = fields[2] as String?;
+      ..date = fields[1] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, TaskManager obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.description)
       ..writeByte(1)
-      ..write(obj.date)
-      ..writeByte(2)
-      ..write(obj.time);
+      ..write(obj.date);
   }
 
   @override

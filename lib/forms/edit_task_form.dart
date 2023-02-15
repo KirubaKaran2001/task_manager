@@ -1,28 +1,46 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:task_manager/database_modal/database_modal.dart';
 
 class EditTaskForm extends StatefulWidget {
-  const EditTaskForm({super.key});
+  final TaskManager? values;
+  final Function(
+    String description,
+    DateTime date,
+  ) onClickedDone;
+
+  const EditTaskForm({
+    Key? key,
+    this.values,
+    required this.onClickedDone,
+  }) : super(key: key);
 
   @override
-  State<EditTaskForm> createState() => _EditTaskFormState();
+  _EditTaskFormState createState() => _EditTaskFormState();
 }
 
 class _EditTaskFormState extends State<EditTaskForm> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController timeController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.values != null) {
+      final tasks = widget.values!;
+      descriptionController.text = tasks.description!;
+      dateController.text = tasks.date!.toString();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'EDIT A TASK',
-          ),
-        ),
         body: Form(
           key: formKey,
           child: Padding(
@@ -40,8 +58,10 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       height: 10,
                     ),
                     ConstrainedBox(
+                      //  fit: FlexFit.loose,
                       constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * 0.50,
+                        maxHeight: MediaQuery.of(context).size.height *
+                            0.50, //when it reach the max it will use scroll
                         maxWidth: double.infinity,
                       ),
                       child: TextFormField(
@@ -54,6 +74,9 @@ class _EditTaskFormState extends State<EditTaskForm> {
                           hintText: 'Type...',
                           border: InputBorder.none,
                         ),
+                        onSaved: (val) {
+                          TaskManager().description = val;
+                        },
                       ),
                     ),
                     const SizedBox(
@@ -66,59 +89,44 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       height: 10,
                     ),
                     TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: dateController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Select Date',
                       ),
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1950),
-                            lastDate: DateTime(2100));
-
-                        if (pickedDate != null) {
-                          String formattedDate =
-                              DateFormat('yyyy-MM-dd').format(pickedDate);
-                          setState(() {
-                            dateController.text = formattedDate;
-                          });
-                        } else {}
+                      readOnly: true,
+                      // onTap: () async {
+                      //   DateTime? pickedDate = await showDatePicker(
+                      //     context: context,
+                      //     initialDate: DateTime.now(),
+                      //     firstDate: DateTime.now(),
+                      //     lastDate: DateTime(2100),
+                      //   );
+                      //   if (pickedDate != null) {
+                      //     String formattedDate = DateFormat('yyyy-MM-dd')
+                      //         .add_jms()
+                      //         .format(pickedDate);
+                      //     setState(() {
+                      //       dateController.text = formattedDate;
+                      //     });
+                      //   } else {
+                      //     debugPrint("Date is not selected");
+                      //   }
+                      // },
+                      onTap: () {
+                        _selectDateTime(context);
+                      },
+                      validator: (val) {
+                        if (dateController.text == '') {
+                          return 'Please enter the date';
+                        } else {
+                          return null;
+                        }
                       },
                     ),
                     const SizedBox(
                       height: 20,
-                    ),
-                    const Text(
-                      'Time',
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      controller: timeController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onTap: () async {
-                        TimeOfDay? picked = await showTimePicker(
-                            context: context, initialTime: TimeOfDay.now());
-                        if (picked != null) {
-                          setState(() {
-                            DateTime parsedTime = DateFormat.Hm()
-                                .parse(picked.format(context).toString());
-                            String formattedTime =
-                                DateFormat('hh:mm:ss').format(parsedTime);
-                            timeController.text = formattedTime;
-                          });
-                        }
-                      },
                     ),
                     const SizedBox(
                       height: 20,
@@ -128,10 +136,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Save'),
-                          ),
+                          buildAddButton(context),
                           const SizedBox(
                             width: 10,
                           ),
@@ -151,6 +156,46 @@ class _EditTaskFormState extends State<EditTaskForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _selectDateTime(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (pickedTime != null) {
+        final DateTime combinedDate = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+        dateController.text = combinedDate.toString();
+      }
+    }
+  }
+
+  Widget buildAddButton(BuildContext context) {
+    return TextButton(
+      child: const Text('Add'),
+      onPressed: () async {
+        final isValid = formKey.currentState!.validate();
+        if (isValid) {
+          final description = descriptionController.text;
+          final date = DateTime.tryParse(dateController.text);
+          widget.onClickedDone(description, date!);
+          Navigator.of(context).pop();
+        }
+      },
     );
   }
 }

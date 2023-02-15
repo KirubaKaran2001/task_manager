@@ -22,7 +22,56 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xff121b2f),
+        textTheme: const TextTheme(
+          displayMedium: TextStyle(
+            color: Color(0xffECE7FF),
+            fontSize: 20,
+          ),
+          displaySmall: TextStyle(
+            color: Color(0xffECE7FF),
+            fontSize: 15,
+          ),
+          displayLarge: TextStyle(
+            color: Color(0xffECE7FF),
+            fontSize: 15,
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: const Color(0xff080C14),
+          extendedTextStyle: TextStyle(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xff080C14),
+            textStyle: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xff080C14),
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+          ),
+          iconTheme: IconThemeData(
+            color: Color(0xffECE7FF),
+          ),
+          actionsIconTheme: IconThemeData(
+            color: Color(0xffECE7FF),
+          ),
+          
+        ),
+        colorScheme:
+            ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(
+          secondary: Colors.blue,
+        ),
+        dividerColor: Colors.white,
+        errorColor: Colors.black,
+        cardColor: const Color(0xff121B2F).withOpacity(0.8),
       ),
       home: const TaskScreen(),
       onGenerateRoute: (RouteSettings settings) {
@@ -30,13 +79,13 @@ class MyApp extends StatelessWidget {
         var routes = <String, WidgetBuilder>{
           '/taskScreen': (BuildContext context) => const TaskScreen(),
           '/addTask': (BuildContext context) => const AddTaskForm(),
-          '/editTask': (BuildContext context) => const EditTaskForm(),
         };
         WidgetBuilder builder = routes[settings.name]!;
         return MaterialPageRoute(
           builder: (ctx) => builder(ctx),
         );
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
