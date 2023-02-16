@@ -1,4 +1,4 @@
-import 'dart:io';
+// ignore_for_file: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -6,23 +6,21 @@ import 'package:intl/intl.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
 import 'package:task_manager/forms/edit_task_form.dart';
 import '../box/box.dart';
-import '../service/service.dart';
-import 'package:timezone/tzdata.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 class TaskScreen extends StatefulWidget {
-  const TaskScreen({super.key});
+const TaskScreen({super.key});
 
-  @override
-  State<TaskScreen> createState() => _TaskScreenState();
+@override
+State<TaskScreen> createState() => _TaskScreenState();
 }
 
 class _TaskScreenState extends State<TaskScreen> {
-  late Box<TaskManager> todoBox;
+late Box<TaskManager> todoBox;
 
   bool notificationsEnabled = false;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+  FlutterLocalNotificationsPlugin();
   int id = 0;
 
   @override
