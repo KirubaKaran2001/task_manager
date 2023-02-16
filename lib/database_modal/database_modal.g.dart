@@ -17,17 +17,20 @@ class TaskManagerAdapter extends TypeAdapter<TaskManager> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TaskManager()
-      ..description = fields[0] as String?
-      ..date = fields[1] as DateTime?;
+      ..title = fields[0] as String?
+      ..description = fields[1] as String?
+      ..date = fields[2] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, TaskManager obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.description)
+      ..write(obj.title)
       ..writeByte(1)
+      ..write(obj.description)
+      ..writeByte(2)
       ..write(obj.date);
   }
 

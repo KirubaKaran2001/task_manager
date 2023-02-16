@@ -1,11 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
+import 'package:task_manager/service/service.dart';
 
 class EditTaskForm extends StatefulWidget {
   final TaskManager? values;
   final Function(
+    String title,
     String description,
     DateTime date,
   ) onClickedDone;
@@ -23,6 +26,9 @@ class EditTaskForm extends StatefulWidget {
 class _EditTaskFormState extends State<EditTaskForm> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  DateTime? scheduleTime;
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -30,6 +36,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
     super.initState();
     if (widget.values != null) {
       final tasks = widget.values!;
+      titleController.text = tasks.description!;
       descriptionController.text = tasks.description!;
       dateController.text = tasks.date!.toString();
     }
@@ -39,9 +46,20 @@ class _EditTaskFormState extends State<EditTaskForm> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-         appBar: AppBar(
+        appBar: AppBar(
           title: const Text(
             'EDIT A TASK',
+          ),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color(0xffECE7FF),
+              size: 20,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         body: Form(
@@ -53,6 +71,47 @@ class _EditTaskFormState extends State<EditTaskForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'Title',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: titleController,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: 'Untitled',
+                      hintStyle: Theme.of(context).textTheme.displaySmall,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    onSaved: (val) {
+                      TaskManager().title = val;
+                    },
+                    validator: (val) {
+                      if (titleController.text == '') {
+                        return 'Please enter the title';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     'Description',
                     style: Theme.of(context).textTheme.displayMedium,
@@ -67,43 +126,72 @@ class _EditTaskFormState extends State<EditTaskForm> {
                           0.50, //when it reach the max it will use scroll
                       maxWidth: double.infinity,
                     ),
-                    child: Container(
-                      color: Colors.blueGrey,
-                      child: TextFormField(
-                        controller: descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        minLines: 3,
-                        decoration: const InputDecoration(
-                          filled: true,
-                          hintText: 'Type...',
-                          border: InputBorder.none,
-                        ),
-                        onSaved: (val) {
-                          TaskManager().description = val;
-                        },
+                    child: TextFormField(
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
+                      controller: descriptionController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 3,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        hintText: 'Type...',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onSaved: (val) {
+                        TaskManager().description = val;
+                      },
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
+                  Text(
                     'Date',
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
                     controller: dateController,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
                       hintText: 'Select Date',
                     ),
                     readOnly: true,
                     onTap: () {
-                      _selectDateTime(context);
+                      // _selectDateTime(context);
+                         DatePicker.showDateTimePicker(
+                        context,
+                        showTitleActions: true,
+                        onChanged: (date) {
+                          scheduleTime = date;
+                          dateController.text = scheduleTime.toString();
+                        },
+                        onConfirm: (date) {},
+                      );
                     },
                     validator: (val) {
                       if (dateController.text == '') {
@@ -172,14 +260,20 @@ class _EditTaskFormState extends State<EditTaskForm> {
   }
 
   Widget buildAddButton(BuildContext context) {
-    return TextButton(
+    return ElevatedButton(
       child: const Text('Add'),
       onPressed: () async {
         final isValid = formKey.currentState!.validate();
         if (isValid) {
+          final title = titleController.text;
           final description = descriptionController.text;
           final date = DateTime.tryParse(dateController.text);
-          widget.onClickedDone(description, date!);
+          widget.onClickedDone(title, description, date!);
+          NotificationService().scheduleNotification(
+            title: title,
+            body: description,
+            scheduledNotificationDateTime: date,
+          );
           Navigator.of(context).pop();
         }
       },

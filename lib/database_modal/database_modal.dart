@@ -4,8 +4,14 @@ part 'database_modal.g.dart';
 @HiveType(typeId: 0)
 class TaskManager extends HiveObject {
   @HiveField(0)
-  String? description;
+  String? title;
 
   @HiveField(1)
+   String? description;
+
+
+  @HiveField(2)
   DateTime? date;
+
+  
 }

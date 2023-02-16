@@ -1,10 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
 import 'package:task_manager/forms/edit_task_form.dart';
-
 import '../box/box.dart';
+import '../service/service.dart';
+import 'package:timezone/tzdata.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class TaskScreen extends StatefulWidget {
   const TaskScreen({super.key});
@@ -16,9 +20,15 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   late Box<TaskManager> todoBox;
 
+  bool notificationsEnabled = false;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  int id = 0;
+
   @override
   void initState() {
     super.initState();
+    tz.initializeTimeZones();
     todoBox = Hive.box<TaskManager>('task');
   }
 
@@ -92,10 +102,12 @@ class _TaskScreenState extends State<TaskScreen> {
                                 builder: (context) => EditTaskForm(
                                   values: tasks,
                                   onClickedDone: (
+                                    title,
                                     description,
                                     date,
                                   ) =>
-                                      editDetails(tasks, description, date),
+                                      editDetails(
+                                          tasks, title, description, date),
                                 ),
                               ),
                             );
@@ -103,41 +115,58 @@ class _TaskScreenState extends State<TaskScreen> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.only(top: 10.0, bottom: 15),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.blue[50],
-                              ),
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    tasks.description!,
-                                    style: const TextStyle(
-                                      color: Colors.black,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.blue[50],
+                                  ),
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.15,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        tasks.description!,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        formattedDate,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        formattedTime,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
                                     ),
+                                    onPressed: () {
+                                      deleteDetails(tasks);
+                                    },
                                   ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    formattedDate,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    formattedTime,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ),
                         );
@@ -155,6 +184,7 @@ class _TaskScreenState extends State<TaskScreen> {
 
   void editDetails(
     TaskManager taskManager,
+    String title,
     String description,
     DateTime date,
   ) {

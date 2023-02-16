@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/forms/add_task_form.dart';
 import 'package:task_manager/screens/task_screen.dart';
-
+import 'package:task_manager/service/service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'database_modal/database_modal.dart';
 
 Future<void> main() async {
@@ -10,6 +11,9 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TaskManagerAdapter());
   await Hive.openBox<TaskManager>('task');
+ WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
@@ -45,6 +49,9 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+            side: const BorderSide(
+              color: Colors.white,
+            ),
             backgroundColor: const Color(0xff080C14),
             textStyle: const TextStyle(
               color: Colors.white,
@@ -54,11 +61,10 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff080C14),
           titleTextStyle: TextStyle(
-            color: Colors.white,
+            color: Color(0xffECE7FF),
           ),
           iconTheme: IconThemeData(
             color: Color(0xffECE7FF),
-            
           ),
           actionsIconTheme: IconThemeData(
             color: Color(0xffECE7FF),
@@ -69,7 +75,7 @@ class MyApp extends StatelessWidget {
           secondary: Colors.blue,
         ),
         dividerColor: Colors.white,
-        errorColor: Colors.black,
+        errorColor: Colors.blueGrey[50],
         cardColor: const Color(0xff121B2F).withOpacity(0.8),
       ),
       home: const TaskScreen(),

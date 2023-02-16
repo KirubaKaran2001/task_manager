@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:task_manager/box/box.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
+import 'package:task_manager/service/service.dart';
 
 class AddTaskForm extends StatefulWidget {
   const AddTaskForm({super.key});
@@ -14,7 +16,9 @@ class AddTaskForm extends StatefulWidget {
 class _AddTaskFormState extends State<AddTaskForm> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  DateTime scheduleTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +27,17 @@ class _AddTaskFormState extends State<AddTaskForm> {
         appBar: AppBar(
           title: const Text(
             'ADD A TASK',
+          ),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Color(0xffECE7FF),
+              size: 20,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         body: SingleChildScrollView(
@@ -34,6 +49,47 @@ class _AddTaskFormState extends State<AddTaskForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'Title',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: titleController,
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: 'Untitled',
+                      hintStyle: Theme.of(context).textTheme.displaySmall,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    onSaved: (val) {
+                      TaskManager().title = val;
+                    },
+                    validator: (val) {
+                      if (titleController.text == '') {
+                        return 'Please enter the title';
+                      } else {
+                        return null;
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     'Description',
                     style: Theme.of(context).textTheme.displayMedium,
@@ -48,36 +104,44 @@ class _AddTaskFormState extends State<AddTaskForm> {
                           0.50, //when it reach the max it will use scroll
                       maxWidth: double.infinity,
                     ),
-                    child: Container(
-                      color: Colors.blueGrey,
-                      child: TextFormField(
-                        controller: descriptionController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        minLines: 3,
-                        decoration: InputDecoration(
-                          filled: true,
-                          hintText: 'Type...',
-                          hintStyle: Theme.of(context).textTheme.displaySmall,
-                          border: InputBorder.none,
-                        ),
-                        onSaved: (val) {
-                          TaskManager().description = val;
-                        },
-                        validator: (val) {
-                          if (descriptionController.text == '') {
-                            return 'Please enter the task';
-                          } else {
-                            return null;
-                          }
-                        },
+                    child: TextFormField(
+                      controller: descriptionController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      minLines: 3,
+                      style: const TextStyle(
+                        color: Colors.white,
                       ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: 'Type...',
+                        hintStyle: Theme.of(context).textTheme.displaySmall,
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onSaved: (val) {
+                        TaskManager().description = val;
+                      },
+                      validator: (val) {
+                        if (descriptionController.text == '') {
+                          return 'Please enter the description';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                   Text(
+                  Text(
                     'Date',
                     style: Theme.of(context).textTheme.displayMedium,
                   ),
@@ -87,13 +151,35 @@ class _AddTaskFormState extends State<AddTaskForm> {
                   TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: dateController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Select Date',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: 'Select Date...',
+                      hintStyle: Theme.of(context).textTheme.displaySmall,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
                     ),
                     readOnly: true,
                     onTap: () {
-                      _selectDateTime(context);
+                      // _selectDateTime(context);
+                      DatePicker.showDateTimePicker(
+                        context,
+                        showTitleActions: true,
+                        onChanged: (date) {
+                          scheduleTime = date;
+                          dateController.text = scheduleTime.toString();
+                        },
+                        onConfirm: (date) {},
+                      );
                     },
                     validator: (val) {
                       if (dateController.text == '') {
@@ -123,6 +209,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
                                       DateTime.tryParse(dateController.text);
                                 final box = Boxes.getdetails();
                                 box.add(taskManager);
+                                NotificationService().scheduleNotification(
+                                  title: titleController.text,
+                                  body: descriptionController.text,
+                                  scheduledNotificationDateTime: scheduleTime,
+                                );
                                 Navigator.of(context).pop();
                               } else {
                                 debugPrint('form not saved');
