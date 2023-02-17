@@ -1,7 +1,11 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/forms/add_task_form.dart';
+import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/task_screen.dart';
+import 'package:task_manager/screens/today_task.dart';
 import 'package:task_manager/service/service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'database_modal/database_modal.dart';
@@ -11,7 +15,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TaskManagerAdapter());
   await Hive.openBox<TaskManager>('task');
- WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
   tz.initializeTimeZones();
   runApp(const MyApp());
@@ -26,23 +30,23 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xff121b2f),
+        scaffoldBackgroundColor: const Color(0xff101035),
         textTheme: const TextTheme(
           displayMedium: TextStyle(
-            color: Color(0xffECE7FF),
+            color: Color(0xffebebeb),
             fontSize: 20,
           ),
           displaySmall: TextStyle(
-            color: Color(0xffECE7FF),
+            color: Color(0xffebebeb),
             fontSize: 15,
           ),
           displayLarge: TextStyle(
-            color: Color(0xffECE7FF),
+            color: Color(0xffebebeb),
             fontSize: 15,
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: const Color(0xff080C14),
+          backgroundColor: const Color(0xff68d3ff),
           extendedTextStyle: TextStyle(
             color: Theme.of(context).primaryColor,
           ),
@@ -61,7 +65,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff080C14),
           titleTextStyle: TextStyle(
-            color: Color(0xffECE7FF),
+            color: Color(0xffebebeb),
           ),
           iconTheme: IconThemeData(
             color: Color(0xffECE7FF),
@@ -78,12 +82,15 @@ class MyApp extends StatelessWidget {
         errorColor: Colors.blueGrey[50],
         cardColor: const Color(0xff121B2F).withOpacity(0.8),
       ),
-      home: const TaskScreen(),
+      home: const HomeScreen(),
       onGenerateRoute: (RouteSettings settings) {
         debugPrint('build route for ${settings.name}');
         var routes = <String, WidgetBuilder>{
+          '/homeScreen': (BuildContext context) => const HomeScreen(),
           '/taskScreen': (BuildContext context) => const TaskScreen(),
           '/addTask': (BuildContext context) => const AddTaskForm(),
+          '/todayTask': (BuildContext context) => const TodayTasks(),
+
         };
         WidgetBuilder builder = routes[settings.name]!;
         return MaterialPageRoute(

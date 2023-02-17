@@ -9,7 +9,6 @@ class NotificationService {
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('flutter_logo');
-
     var initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     await notificationsPlugin.initialize(initializationSettings,
@@ -24,7 +23,7 @@ class NotificationService {
         'channelName',
         importance: Importance.max,
         playSound: true,
-        
+        sound: RawResourceAndroidNotificationSound('notify_sound'),
       ),
     );
   }
