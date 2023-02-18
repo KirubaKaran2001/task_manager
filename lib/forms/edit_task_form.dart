@@ -1,5 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
@@ -12,13 +11,11 @@ class EditTaskForm extends StatefulWidget {
     String description,
     DateTime date,
   ) onClickedDone;
-
   const EditTaskForm({
     Key? key,
     this.values,
     required this.onClickedDone,
   }) : super(key: key);
-
   @override
   _EditTaskFormState createState() => _EditTaskFormState();
 }
@@ -30,7 +27,6 @@ class _EditTaskFormState extends State<EditTaskForm> {
   DateTime? scheduleTime;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
@@ -183,7 +179,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
                     readOnly: true,
                     onTap: () {
                       // _selectDateTime(context);
-                         DatePicker.showDateTimePicker(
+                      DatePicker.showDateTimePicker(
                         context,
                         showTitleActions: true,
                         onChanged: (date) {
@@ -234,8 +230,6 @@ class _EditTaskFormState extends State<EditTaskForm> {
     );
   }
 
- 
-
   Widget buildAddButton(BuildContext context) {
     return ElevatedButton(
       child: const Text('Add'),
@@ -256,4 +250,4 @@ class _EditTaskFormState extends State<EditTaskForm> {
       },
     );
   }
-}
+}             

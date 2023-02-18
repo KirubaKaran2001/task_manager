@@ -15,7 +15,6 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TaskManagerAdapter());
   await Hive.openBox<TaskManager>('task');
-  WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
   tz.initializeTimeZones();
   runApp(const MyApp());

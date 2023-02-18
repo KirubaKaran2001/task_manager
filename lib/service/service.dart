@@ -1,3 +1,4 @@
+// ignore_for_file: unused_import, depend_on_referenced_packages
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -41,16 +42,17 @@ class NotificationService {
       String? payLoad,
       required DateTime scheduledNotificationDateTime}) async {
     return notificationsPlugin.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.from(
-          scheduledNotificationDateTime,
-          tz.local,
-        ),
-        await notificationDetails(),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(
+        scheduledNotificationDateTime,
+        tz.local,
+      ),
+      await notificationDetails(),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 }

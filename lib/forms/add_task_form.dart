@@ -60,7 +60,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: titleController,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                     decoration: InputDecoration(
                       filled: true,
@@ -110,7 +110,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       maxLines: null,
                       minLines: 3,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       decoration: InputDecoration(
                         filled: true,
