@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, must_be_immutable
+// ignore_for_file: depend_on_referenced_packages, must_be_immutable, non_constant_identifier_names
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
@@ -59,7 +59,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 box.values.toList().cast<TaskManager>();
             final now = DateTime.now();
             final today = DateTime(now.year, now.month, now.day);
-            final todayTasks = todoBox.values.where((task) => task.date!.isAtSameMomentAs(today)).toList();
+            final todayTasks = todoBox.values
+                .where((task) => task.date!.isAtSameMomentAs(today))
+                .toList();
+
+            final CompletedTasks = todoBox.values
+                .where(
+                  (task) => task.completed!,
+                )
+                .toList();
             return Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -96,15 +104,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       HomeCardLayout(
-                          formattedDate: formattedDate,
-                          taskManager: taskManager,
-                          taskList: todayTasks.length.toString(),
-                          details: 'Today',
-                          widgets: Text(formattedDate),
-                          color: Colors.blue,
-                          callbackAction: () {
-                            Navigator.pushNamed(context, '/todayTask');
-                          }),
+                        formattedDate: formattedDate,
+                        taskManager: taskManager,
+                        taskList: todayTasks.length.toString(),
+                        details: 'Today',
+                        widgets: Text(formattedDate),
+                        color: Colors.blue,
+                        callbackAction: () {
+                          Navigator.pushNamed(context, '/todayTask');
+                        },
+                      ),
                       const SizedBox(
                         width: 5,
                       ),
@@ -130,14 +139,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   HomeCardLayout(
                     formattedDate: '',
                     taskManager: taskManager,
-                    taskList: taskManager.length.toString(),
+                    taskList: CompletedTasks.length.toString(),
                     details: 'Completed',
                     widgets: const Icon(
                       Icons.done,
                       color: Colors.white,
                     ),
                     color: Colors.orange[300],
-                    callbackAction: null,
+                    callbackAction: () {
+                      Navigator.pushNamed(context, '/completedTask');
+                    },
                   ),
                 ],
               ),

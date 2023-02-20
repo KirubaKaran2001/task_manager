@@ -5,8 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/forms/add_task_form.dart';
 import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/task_screen.dart';
-import 'package:task_manager/screens/today_task.dart';
-import 'package:task_manager/service/service.dart';
+import 'package:task_manager/screens/completed_task.dart';
+import 'package:task_manager/notification_service/notification_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'database_modal/database_modal.dart';
 
@@ -88,8 +88,8 @@ class MyApp extends StatelessWidget {
           '/homeScreen': (BuildContext context) => const HomeScreen(),
           '/taskScreen': (BuildContext context) => const TaskScreen(),
           '/addTask': (BuildContext context) => const AddTaskForm(),
-          '/todayTask': (BuildContext context) => const TodayTasks(),
-
+          '/completedTask': (BuildContext context) => const CompletedTask(),
+          'todayTask': (BuildContext context) => const TaskScreen(),
         };
         WidgetBuilder builder = routes[settings.name]!;
         return MaterialPageRoute(

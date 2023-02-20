@@ -7,11 +7,17 @@ class TaskManager extends HiveObject {
   String? title;
 
   @HiveField(1)
-   String? description;
-
+  String? description;
 
   @HiveField(2)
   DateTime? date;
 
-  
+  @HiveField(3)
+  bool? completed;
+  TaskManager({
+    this.title,
+    this.description,
+    this.date,
+    this.completed = false,
+  });
 }

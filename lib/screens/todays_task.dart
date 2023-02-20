@@ -8,14 +8,14 @@ import 'package:task_manager/forms/edit_task_form.dart';
 import '../box/box.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-class TodayTasks extends StatefulWidget {
-  const TodayTasks({super.key});
+class TodayTask extends StatefulWidget {
+  const TodayTask({super.key});
 
   @override
-  State<TodayTasks> createState() => _TodayTasksState();
+  State<TodayTask> createState() => _TodayTaskState();
 }
 
-class _TodayTasksState extends State<TodayTasks> {
+class _TodayTaskState extends State<TodayTask> {
   late Box<TaskManager> todoBox;
 
   bool notificationsEnabled = false;
@@ -35,9 +35,7 @@ class _TodayTasksState extends State<TodayTasks> {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final todayTasks = todoBox.values
-        .where(
-          (task) => task.date!.isAtSameMomentAs(today),
-        )
+        .where((task) => task.date!.isAtSameMomentAs(today))
         .toList();
     print(todayTasks);
     return SafeArea(

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:task_manager/box/box.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
-import 'package:task_manager/service/service.dart';
+import 'package:task_manager/notification_service/notification_service.dart';
 
 class AddTaskForm extends StatefulWidget {
   const AddTaskForm({super.key});
@@ -60,10 +60,9 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: titleController,
                     style: const TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                     decoration: InputDecoration(
-                      filled: true,
                       hintText: 'Untitled',
                       hintStyle: Theme.of(context).textTheme.displaySmall,
                       border: const OutlineInputBorder(
@@ -78,6 +77,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     ),
                     onSaved: (val) {
                       TaskManager().title = val;
+                      debugPrint('$val');
                     },
                     validator: (val) {
                       if (titleController.text == '') {
@@ -110,10 +110,9 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       maxLines: null,
                       minLines: 3,
                       style: const TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                       decoration: InputDecoration(
-                        filled: true,
                         hintText: 'Type...',
                         hintStyle: Theme.of(context).textTheme.displaySmall,
                         border: const OutlineInputBorder(
@@ -155,7 +154,6 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       color: Colors.white,
                     ),
                     decoration: InputDecoration(
-                      filled: true,
                       hintText: 'Select Date...',
                       hintStyle: Theme.of(context).textTheme.displaySmall,
                       border: const OutlineInputBorder(
@@ -203,6 +201,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                               if (form.validate()) {
                                 form.save();
                                 final taskManager = TaskManager()
+                                  ..title = titleController.text
                                   ..description = descriptionController.text
                                   ..date =
                                       DateTime.tryParse(dateController.text);
@@ -252,6 +251,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   @override
   void dispose() {
+    titleController.dispose();
     descriptionController.dispose();
     dateController.dispose();
     super.dispose();

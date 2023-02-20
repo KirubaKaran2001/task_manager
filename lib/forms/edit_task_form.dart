@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
-import 'package:task_manager/service/service.dart';
+import 'package:task_manager/notification_service/notification_service.dart';
 
 class EditTaskForm extends StatefulWidget {
   final TaskManager? values;
@@ -11,11 +11,13 @@ class EditTaskForm extends StatefulWidget {
     String description,
     DateTime date,
   ) onClickedDone;
+
   const EditTaskForm({
     Key? key,
     this.values,
     required this.onClickedDone,
   }) : super(key: key);
+
   @override
   _EditTaskFormState createState() => _EditTaskFormState();
 }
@@ -81,9 +83,9 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       color: Colors.white,
                     ),
                     decoration: InputDecoration(
-                      filled: true,
                       hintText: 'Untitled',
                       hintStyle: Theme.of(context).textTheme.displaySmall,
+
                       border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),
@@ -131,7 +133,6 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       maxLines: null,
                       minLines: 3,
                       decoration: const InputDecoration(
-                        filled: true,
                         hintText: 'Type...',
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
@@ -250,4 +251,4 @@ class _EditTaskFormState extends State<EditTaskForm> {
       },
     );
   }
-}             
+}

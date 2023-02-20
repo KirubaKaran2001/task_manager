@@ -1,4 +1,7 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, unused_local_variable, void_checks, sized_box_for_whitespace
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -9,19 +12,20 @@ import '../box/box.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 class TaskScreen extends StatefulWidget {
-const TaskScreen({super.key});
+  const TaskScreen({super.key});
 
-@override
-State<TaskScreen> createState() => _TaskScreenState();
+  @override
+  State<TaskScreen> createState() => _TaskScreenState();
 }
 
 class _TaskScreenState extends State<TaskScreen> {
-late Box<TaskManager> todoBox;
+  late Box<TaskManager> todoBox;
 
   bool notificationsEnabled = false;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   int id = 0;
+  bool showLayout = false;
 
   @override
   void initState() {
@@ -29,6 +33,12 @@ late Box<TaskManager> todoBox;
     tz.initializeTimeZones();
     todoBox = Hive.box<TaskManager>('task');
   }
+
+  List<Color> colorsList = [
+    const Color(0xffACC8E5),
+    Colors.orange,
+    Colors.white,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -76,23 +86,22 @@ late Box<TaskManager> todoBox;
               return Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      // gridDelegate:
-                      //     const SliverGridDelegateWithMaxCrossAxisExtent(
-                      //   maxCrossAxisExtent: 100, //width
-                      //   mainAxisExtent: 150, //height
-                      //   crossAxisSpacing: 20,
-                      //   childAspectRatio: 1,
-                      //   mainAxisSpacing: 10,
-                      // ),
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 250, //width
+                        mainAxisExtent: 180, //height
+                        crossAxisSpacing: 20,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 10,
+                      ),
                       padding: const EdgeInsets.all(8),
                       itemCount: taskManager.length,
                       itemBuilder: (BuildContext context, int index) {
                         TaskManager tasks = taskManager[index];
+                        final completedTask = todoBox.getAt(index);
                         String formattedDate =
                             DateFormat('dd-MM-yyyy').format(tasks.date!);
-                        String formattedTime =
-                            DateFormat('hh:mm:ss').format(tasks.date!);
                         return InkWell(
                           onTap: () {
                             Navigator.of(context).push(
@@ -110,62 +119,75 @@ late Box<TaskManager> todoBox;
                               ),
                             );
                           },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 10.0, bottom: 15),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.blue[50],
-                                  ),
-                                  width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.15,
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        tasks.description!,
-                                        style: const TextStyle(
-                                          color: Colors.black,
+                          onLongPress: () {
+                            setState(() {
+                              showLayout = true;
+                            });
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          formattedDate,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        formattedDate,
-                                        style: const TextStyle(
-                                          color: Colors.black,
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        formattedTime,
-                                        style: const TextStyle(
-                                          color: Colors.black,
+                                        Text(
+                                          tasks.title!,
+                                          style: const TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        (showLayout == true)
+                                            ? Checkbox(
+                                                value: tasks.completed,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    tasks.completed = value;
+                                                    todoBox.putAt(
+                                                      index,
+                                                      completedTask!,
+                                                    );
+                                                    showLayout = false;
+                                                  });
+                                                },
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                    ),
-                                    onPressed: () {
-                                      deleteDetails(tasks);
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
+                              ),
+                              (showLayout == true)
+                                  ? Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                        ),
+                                        onPressed: () {
+                                          deleteDetails(tasks);
+                                          showLayout = false;
+                                        },
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
                           ),
                         );
                       },
@@ -186,6 +208,7 @@ late Box<TaskManager> todoBox;
     String description,
     DateTime date,
   ) {
+    taskManager.title = title;
     taskManager.description = description;
     taskManager.date = date;
     taskManager.save();
@@ -193,5 +216,11 @@ late Box<TaskManager> todoBox;
 
   void deleteDetails(TaskManager taskManager) {
     taskManager.delete();
+  }
+
+  Color getRandomColors(List<Color> colorsList, int index) {
+    final random = Random();
+    final colors = random.nextInt(colorsList.length);
+    return colorsList[colors];
   }
 }
