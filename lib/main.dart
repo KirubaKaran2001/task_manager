@@ -7,6 +7,7 @@ import 'package:task_manager/screens/home_screen.dart';
 import 'package:task_manager/screens/task_screen.dart';
 import 'package:task_manager/screens/completed_task.dart';
 import 'package:task_manager/notification_service/notification_service.dart';
+import 'package:task_manager/screens/today_task.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'database_modal/database_modal.dart';
 
@@ -73,13 +74,13 @@ class MyApp extends StatelessWidget {
             color: Color(0xffECE7FF),
           ),
         ),
-        colorScheme:
-            ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(
-          secondary: Colors.blue,
-        ),
         dividerColor: Colors.white,
-        errorColor: Colors.blueGrey[50],
         cardColor: const Color(0xff121B2F).withOpacity(0.8),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue)
+            .copyWith(
+              secondary: Colors.blue,
+            )
+            .copyWith(error: Colors.blueGrey[50]),
       ),
       home: const HomeScreen(),
       onGenerateRoute: (RouteSettings settings) {
@@ -89,7 +90,7 @@ class MyApp extends StatelessWidget {
           '/taskScreen': (BuildContext context) => const TaskScreen(),
           '/addTask': (BuildContext context) => const AddTaskForm(),
           '/completedTask': (BuildContext context) => const CompletedTask(),
-          'todayTask': (BuildContext context) => const TaskScreen(),
+          '/todayTask': (BuildContext context) => const TodayTaskScreen(),
         };
         WidgetBuilder builder = routes[settings.name]!;
         return MaterialPageRoute(

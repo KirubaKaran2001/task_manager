@@ -58,7 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
             List<TaskManager> taskManager =
                 box.values.toList().cast<TaskManager>();
             final now = DateTime.now();
-            final today = DateTime(now.year, now.month, now.day);
+                final today = DateTime(now.year, now.month, now.day, now.hour, now.minute);
+
             final todayTasks = todoBox.values
                 .where((task) => task.date!.isAtSameMomentAs(today))
                 .toList();
@@ -85,15 +86,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintStyle: Theme.of(context).textTheme.displaySmall,
                       border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
                       enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
                     ),
                   ),
@@ -104,12 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       HomeCardLayout(
-                        formattedDate: formattedDate,
+                        formattedDate: '',
                         taskManager: taskManager,
                         taskList: todayTasks.length.toString(),
                         details: 'Today',
                         widgets: Text(formattedDate),
-                        color: Colors.blue,
+                        color: Colors.red,
                         callbackAction: () {
                           Navigator.pushNamed(context, '/todayTask');
                         },

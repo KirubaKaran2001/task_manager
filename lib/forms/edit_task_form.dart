@@ -37,6 +37,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
       titleController.text = tasks.description!;
       descriptionController.text = tasks.description!;
       dateController.text = tasks.date!.toString();
+      debugPrint('${tasks.date!}');
     }
   }
 
@@ -85,7 +86,6 @@ class _EditTaskFormState extends State<EditTaskForm> {
                     decoration: InputDecoration(
                       hintText: 'Untitled',
                       hintStyle: Theme.of(context).textTheme.displaySmall,
-
                       border: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                       ),

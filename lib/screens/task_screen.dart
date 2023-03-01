@@ -1,9 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages, unused_local_variable, void_checks, sized_box_for_whitespace
-import 'dart:ffi';
-import 'dart:math';
 
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
@@ -21,17 +19,14 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   late Box<TaskManager> todoBox;
 
-  bool notificationsEnabled = false;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
   int id = 0;
   bool showLayout = false;
 
   @override
   void initState() {
-    super.initState();
-    tz.initializeTimeZones();
-    todoBox = Hive.box<TaskManager>('task');
+  super.initState();
+  tz.initializeTimeZones();
+  todoBox = Hive.box<TaskManager>('task');
   }
 
   List<Color> colorsList = [
@@ -53,7 +48,9 @@ class _TaskScreenState extends State<TaskScreen> {
               SizedBox(
                 width: 10,
               ),
-              Text('Add a Task'),
+              Text(
+                'Add a Task',
+              ),
             ],
           ),
           onPressed: () {
@@ -154,18 +151,28 @@ class _TaskScreenState extends State<TaskScreen> {
                                           ),
                                         ),
                                         (showLayout == true)
-                                            ? Checkbox(
-                                                value: tasks.completed,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    tasks.completed = value;
-                                                    todoBox.putAt(
-                                                      index,
-                                                      completedTask!,
-                                                    );
-                                                    showLayout = false;
-                                                  });
-                                                },
+                                            ? Row(
+                                                children: [
+                                                  const Text(
+                                                    'Task Completed: ',
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                  ),
+                                                  ),
+                                                  Checkbox(
+                                                    value: tasks.completed,
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        tasks.completed = value;
+                                                        todoBox.putAt(
+                                                          index,
+                                                          completedTask!,
+                                                        );
+                                                        showLayout = false;
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
                                               )
                                             : const SizedBox(),
                                       ],
