@@ -34,7 +34,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
     super.initState();
     if (widget.values != null) {
       final tasks = widget.values!;
-      titleController.text = tasks.description!;
+      titleController.text = tasks.title!;
       descriptionController.text = tasks.description!;
       dateController.text = tasks.date!.toString();
       debugPrint('${tasks.date!}');
