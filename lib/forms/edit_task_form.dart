@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:task_manager/database_modal/database_modal.dart';
 import 'package:task_manager/notification_service/notification_service.dart';
 
@@ -178,17 +178,20 @@ class _EditTaskFormState extends State<EditTaskForm> {
                       hintText: 'Select Date',
                     ),
                     readOnly: true,
-                    onTap: () {
-                      // _selectDateTime(context);
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        onChanged: (date) {
-                          scheduleTime = date;
-                          dateController.text = scheduleTime.toString();
-                        },
-                        onConfirm: (date) {},
+                       onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
                       );
+                      if (pickedDate != null) {
+                        String formattedDate =
+                            DateFormat('yyyy-MM-dd').format(pickedDate);
+                        setState(() {
+                          dateController.text = formattedDate;
+                        });
+                      } else {}
                     },
                     validator: (val) {
                       if (dateController.text == '') {
